@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('刨冰の小窝：脚本加载成功！');
     // 公告弹窗逻辑
     const noticeModal = document.getElementById('notice-modal');
     const closeNoticeBtn = document.getElementById('close-notice');
