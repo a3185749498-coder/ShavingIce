@@ -3,8 +3,745 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACG盒子 - 你的二次元导航</title>
-    <link rel="stylesheet" href="style.css">
+    <title>刨冰の小窝</title>
+    <style>
+:root {
+    --sidebar-width: 200px;
+    --header-height: 60px;
+    --bg-color: #f8fafc;
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --accent-color: #ff4d6d;
+    --accent-light: #fff1f2;
+    --border-color: rgba(226, 232, 240, 0.5);
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --header-bg: rgba(255, 255, 255, 0.75);
+    --search-bg: rgba(241, 245, 249, 0.8);
+    --input-text: #0f172a;
+}
+
+[data-theme="dark"] {
+    --bg-color: #0b0e14;
+    --bg-gradient: radial-gradient(circle at top right, #1e1b4b 0%, #0b0e14 100%);
+    --card-bg: rgba(23, 27, 34, 0.85);
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-color: rgba(45, 52, 64, 0.6);
+    --shadow-sm: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    --header-bg: rgba(11, 14, 20, 0.85);
+    --search-bg: rgba(23, 27, 34, 0.9);
+    --input-text: #f8fafc;
+}
+
+[data-theme="dark"] .logo-text {
+    color: #a0d8ff;
+    text-shadow: 0 0 10px rgba(160, 216, 255, 0.3);
+}
+
+[data-theme="dark"] .link-card:hover {
+    background: #252525;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-main);
+    line-height: 1.5;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.sidebar-closed {
+    transform: translateX(calc(-1 * var(--sidebar-width)));
+}
+
+.sidebar-top {
+    padding: 20px;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 800;
+    color: #87CEFA;
+    letter-spacing: -1px;
+}
+
+.sidebar-menu {
+    flex: 1;
+    padding: 0 10px;
+    overflow-y: auto;
+}
+
+.menu-item {
+    padding: 10px 15px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background: var(--bg-color);
+}
+
+.menu-item.active {
+    background: var(--bg-color);
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.menu-icon {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-bottom {
+    padding: 15px 10px;
+    border-top: 1px solid #f9f9f9;
+}
+
+.bottom-item {
+    padding: 8px 15px;
+    font-size: 13px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.bottom-item:hover {
+    background: #f5f6f8;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+    min-width: 0;
+}
+
+.main-content.expanded {
+    margin-left: 0;
+}
+
+/* Top Header */
+.top-header {
+    height: var(--header-height);
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    transition: background 0.3s ease;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+    padding: 4px;
+}
+
+.top-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.top-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.top-nav-item:hover {
+    background: var(--bg-color);
+    color: var(--text-main);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.help-btn {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-btn:hover {
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.theme-toggle {
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.2);
+}
+
+/* Search Section */
+.search-section {
+    padding: 40px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcome-text {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 30px;
+    background: linear-gradient(to right, #ff4d6d, #ff9a9e, #a18cd1, #4facfe, #00f2fe, #ff4d6d);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientFlow 3s linear infinite;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    letter-spacing: 2px;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+.search-tabs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.search-tab {
+    font-size: 14px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px 0 8px;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.search-tab:hover {
+    color: #666;
+}
+
+.search-tab.active {
+    color: #333;
+    font-weight: 600;
+}
+
+.search-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #333;
+    border-radius: 2px;
+}
+
+.search-bar-wrap {
+    width: 100%;
+    max-width: 720px;
+}
+
+.search-input-box {
+    background: var(--search-bg);
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    transition: background 0.3s ease;
+}
+
+.search-input-box input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: var(--input-text);
+}
+
+.search-input-box input::placeholder {
+    color: #aaa;
+}
+
+.search-icon {
+    color: #aaa;
+    font-size: 18px;
+}
+
+/* Content Body */
+.content-body {
+    padding: 0 32px 60px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.tags-row {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.tag {
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: #ffffff;
+    color: #666;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tag:hover {
+    border-color: #ddd;
+    background: #fafafa;
+}
+
+.tag.hot {
+    background: var(--accent-light);
+    color: var(--accent-color);
+    border-color: var(--accent-light);
+}
+
+/* Category Block */
+.category-block {
+    margin-bottom: 32px;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-left: 4px;
+}
+
+.cat-icon {
+    font-size: 18px;
+    color: #333;
+}
+
+.cat-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Links Grid */
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.link-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+}
+
+.link-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    background: #fff;
+}
+
+.card-left {
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+.link-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #f9f9f9;
+}
+
+.card-mid {
+    flex: 1;
+    min-width: 0;
+}
+
+.link-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.link-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-right {
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.arrow-icon {
+    color: #eeeeee;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 10% auto;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: var(--shadow-md);
+    color: var(--text-main);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--search-bg);
+    color: var(--text-main);
+    outline: none;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-cancel, .btn-save {
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+}
+
+.btn-cancel {
+    background: var(--bg-color);
+    color: var(--text-muted);
+}
+
+.btn-save {
+    background: var(--accent-color);
+    color: white;
+}
+
+.btn-custom {
+    color: var(--accent-color) !important;
+    font-weight: 600 !important;
+}
+
+.btn-custom:hover {
+    background: var(--accent-light) !important;
+}
+
+/* Inline Custom Button Styles */
+.btn-inline-custom {
+    cursor: pointer;
+    border: 2px dashed var(--border-color) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-inline-custom:hover {
+    border-color: var(--accent-color) !important;
+    background: var(--accent-light) !important;
+    transform: translateY(-4px);
+}
+
+.link-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: var(--accent-color);
+}
+
+.btn-inline-custom .link-name {
+    color: var(--accent-color);
+}
+
+.delete-btn {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #ff4d6d;
+    color: white;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(255, 77, 109, 0.4);
+    z-index: 10;
+}
+
+.link-card.delete-mode .delete-btn {
+    display: flex;
+}
+
+.link-card.delete-mode {
+    animation: shake 0.3s infinite;
+}
+
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(1deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-1deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.btn-clear.active {
+    color: #ff4d6d !important;
+    background: var(--accent-light) !important;
+}
+
+.link-card:hover .arrow-icon {
+    color: #cccccc;
+}
+
+/* Notice Modal Styles */
+.notice-modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.notice-content {
+    text-align: center;
+    padding: 30px;
+    border-radius: 20px;
+    background: var(--card-bg);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    animation: noticeFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes noticeFadeIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.notice-header {
+    margin-bottom: 20px;
+}
+
+.notice-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.notice-header h3 {
+    font-size: 20px;
+    color: var(--text-main);
+    letter-spacing: 1px;
+}
+
+.notice-body {
+    margin-bottom: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.btn-confirm {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #ff7b92 100%);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 77, 109, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .sidebar {
+        transform: translateX(calc(-1 * var(--sidebar-width)));
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        display: none;
+    }
+    .links-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .content-body {
+        padding: 0 16px 40px;
+    }
+    .search-tabs {
+        gap: 12px;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 8px;
+        justify-content: flex-start;
+    }
+    .search-tab {
+        white-space: nowrap;
+    }
+}
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -376,6 +1113,312 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('刨冰の小窝：脚本加载成功！');
+    // 公告弹窗逻辑
+    const noticeModal = document.getElementById('notice-modal');
+    const closeNoticeBtn = document.getElementById('close-notice');
+
+    if (noticeModal) {
+        // 检查本地存储中是否已有公告已读标记
+        const noticeShown = localStorage.getItem('noticeShown');
+        
+        if (!noticeShown) {
+            // 延迟一小会儿显示，增加仪式感
+            setTimeout(() => {
+                noticeModal.style.display = 'flex';
+            }, 500);
+        }
+    }
+
+    if (closeNoticeBtn) {
+        closeNoticeBtn.addEventListener('click', () => {
+            noticeModal.style.display = 'none';
+            // 用户点击确认后，在本地存储记录已读标记
+            localStorage.setItem('noticeShown', 'true');
+        });
+    }
+
+    // 深色模式切换逻辑
+    const themeToggle = document.querySelector('.theme-toggle');
+    const htmlElement = document.documentElement;
+
+    // 检查本地存储
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    });
+
+    // 侧边栏开关逻辑
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+
+    menuToggle.addEventListener('click', () => {
+        if (window.innerWidth < 1200) {
+            sidebar.classList.toggle('active');
+        } else {
+            sidebar.classList.toggle('sidebar-closed');
+            mainContent.classList.toggle('expanded');
+        }
+    });
+
+    // 点击侧边栏外部自动关闭 (移动端)
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth < 1200 && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    // 搜索切换逻辑
+    const searchTabs = document.querySelectorAll('.search-tab');
+    const searchInput = document.querySelector('.search-input-box input');
+    
+    searchTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            searchTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const engine = tab.textContent.trim();
+            searchInput.placeholder = engine === '站内' ? '站内搜索' : `在 ${engine} 中搜索`;
+        });
+    });
+
+    // 自定义链接逻辑
+    const myLinksGrid = document.getElementById('my-links-grid');
+    const customModal = document.getElementById('custom-modal');
+    const customForm = document.getElementById('custom-form');
+    const btnCustomSidebar = document.querySelector('.btn-custom');
+    const btnClearSidebar = document.querySelector('.btn-clear');
+    const closeModal = document.querySelector('.close-modal');
+    const btnCancelModal = document.querySelector('.btn-cancel');
+
+    let isDeleteMode = false;
+
+    // 从 localStorage 加载自定义链接
+    const loadCustomLinks = () => {
+        const links = JSON.parse(localStorage.getItem('customLinks') || '[]');
+        
+        // 保留“添加自定义”按钮，并根据模式重新生成链接卡片
+        const customBtnHtml = `
+            <div class="link-card-wrapper btn-inline-custom-wrap">
+                <div class="link-card btn-inline-custom" id="add-custom-btn-inline">
+                    <div class="card-left">
+                        <div class="link-icon-placeholder">➕</div>
+                    </div>
+                    <div class="card-mid">
+                        <div class="link-name">添加自定义</div>
+                        <div class="link-desc">点击添加您的链接</div>
+                    </div>
+                    <div class="card-right"><span class="arrow-icon">›</span></div>
+                </div>
+            </div>
+        `;
+
+        const linksHtml = links.map((link, index) => {
+            let iconUrl = link.icon;
+            if (!iconUrl) {
+                try {
+                    const hostname = new URL(link.url).hostname;
+                    iconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`;
+                } catch(e) {
+                    iconUrl = 'https://www.google.com/s2/favicons?sz=64&domain=google.com';
+                }
+            }
+            
+            return `
+                <div class="link-card-wrapper" style="position: relative;">
+                    <a href="${isDeleteMode ? 'javascript:void(0)' : link.url}" target="${isDeleteMode ? '_self' : '_blank'}" class="link-card ${isDeleteMode ? 'delete-mode' : ''}">
+                        <div class="card-left">
+                            <img src="${iconUrl}" class="link-icon" onerror="this.src='https://www.google.com/s2/favicons?sz=64&domain=google.com'"/>
+                        </div>
+                        <div class="card-mid">
+                            <div class="link-name">${link.name}</div>
+                            <div class="link-desc">${link.desc || link.name}</div>
+                        </div>
+                        <div class="card-right">
+                            <span class="arrow-icon">›</span>
+                        </div>
+                        ${isDeleteMode ? `<div class="delete-btn" data-index="${index}">&times;</div>` : ''}
+                    </a>
+                </div>
+            `;
+        }).join('');
+
+        myLinksGrid.innerHTML = linksHtml + customBtnHtml;
+
+        // 重新绑定“添加自定义”按钮事件
+        const addBtn = document.getElementById('add-custom-btn-inline');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                if (isDeleteMode) return;
+                customModal.style.display = 'block';
+            });
+        }
+
+        // 绑定删除按钮事件
+        if (isDeleteMode) {
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const index = parseInt(btn.getAttribute('data-index'));
+                    deleteCustomLink(index);
+                });
+            });
+        }
+    };
+
+    const deleteCustomLink = (index) => {
+        const links = JSON.parse(localStorage.getItem('customLinks') || '[]');
+        links.splice(index, 1);
+        localStorage.setItem('customLinks', JSON.stringify(links));
+        loadCustomLinks();
+    };
+
+    // 初始化加载
+    loadCustomLinks();
+
+    // 侧边栏“自定义”按钮
+    btnCustomSidebar.addEventListener('click', () => {
+        if (isDeleteMode) toggleDeleteMode();
+        customModal.style.display = 'block';
+    });
+
+    // 侧边栏“清除定义”按钮
+    btnClearSidebar.addEventListener('click', () => {
+        toggleDeleteMode();
+    });
+
+    const toggleDeleteMode = () => {
+        isDeleteMode = !isDeleteMode;
+        btnClearSidebar.classList.toggle('active', isDeleteMode);
+        loadCustomLinks();
+    };
+
+    // 弹窗关闭逻辑
+    const closeCustomModal = () => {
+        customModal.style.display = 'none';
+        customForm.reset();
+    };
+
+    if (closeModal) closeModal.addEventListener('click', closeCustomModal);
+    if (btnCancelModal) btnCancelModal.addEventListener('click', closeCustomModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === customModal) closeCustomModal();
+    });
+
+    // 表单提交逻辑
+    customForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('site-name').value;
+        const url = document.getElementById('site-url').value;
+        const icon = document.getElementById('site-icon').value;
+        const desc = document.getElementById('site-desc').value;
+
+        const newLink = { name, url, icon, desc };
+        const links = JSON.parse(localStorage.getItem('customLinks') || '[]');
+        links.push(newLink);
+        localStorage.setItem('customLinks', JSON.stringify(links));
+
+        closeCustomModal();
+        loadCustomLinks();
+    });
+
+    // 图片加载失败处理
+    document.addEventListener('error', (e) => {
+        if (e.target.tagName === 'IMG' && e.target.classList.contains('link-icon')) {
+            e.target.src = 'https://www.google.com/s2/favicons?sz=64&domain=google.com';
+        }
+    }, true);
+
+    // 平滑滚动逻辑
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetId = item.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                // 更新激活状态
+                menuItems.forEach(mi => mi.classList.remove('active'));
+                item.classList.add('active');
+
+                // 移动端点击后收起侧边栏
+                if (window.innerWidth < 1200) {
+                    sidebar.classList.remove('active');
+                }
+
+                // 滚动
+                const yOffset = -80; // 对应 header 高度
+                const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        });
+    });
+
+    // 滚动监听更新激活分类
+    const observerOptions = {
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                if (!id) return;
+                
+                menuItems.forEach(mi => {
+                    if (mi.getAttribute('data-target') === id) {
+                        mi.classList.add('active');
+                    } else {
+                        mi.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.category-block[id]').forEach(block => {
+        observer.observe(block);
+    });
+
+    // 搜索回车逻辑
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                const activeEngine = document.querySelector('.search-tab.active').textContent.trim();
+                let searchUrl = '';
+                if (activeEngine === '必应') {
+                    searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+                } else if (activeEngine === '百度') {
+                    searchUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`;
+                } else if (activeEngine === '谷歌') {
+                    searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                }
+                
+                if (searchUrl) {
+                    window.open(searchUrl, '_blank');
+                }
+            }
+        }
+    });
+});
+    </script>
 </body>
 </html>
