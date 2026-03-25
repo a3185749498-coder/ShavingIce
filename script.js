@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 公告弹窗逻辑
+    const noticeModal = document.getElementById('notice-modal');
+    const closeNoticeBtn = document.getElementById('close-notice');
+
+    if (noticeModal) {
+        // 检查本地存储中是否已有公告已读标记
+        const noticeShown = localStorage.getItem('noticeShown');
+        
+        if (!noticeShown) {
+            // 延迟一小会儿显示，增加仪式感
+            setTimeout(() => {
+                noticeModal.style.display = 'flex';
+            }, 500);
+        }
+    }
+
+    if (closeNoticeBtn) {
+        closeNoticeBtn.addEventListener('click', () => {
+            noticeModal.style.display = 'none';
+            // 用户点击确认后，在本地存储记录已读标记
+            localStorage.setItem('noticeShown', 'true');
+        });
+    }
+
     // 深色模式切换逻辑
     const themeToggle = document.querySelector('.theme-toggle');
     const htmlElement = document.documentElement;
